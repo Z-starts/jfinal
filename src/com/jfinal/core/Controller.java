@@ -16,19 +16,23 @@
 
 package com.jfinal.core;
 
+import static com.jfinal.core.Const.I18N_LOCALE;
+
 import java.io.File;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import static com.jfinal.core.Const.I18N_LOCALE;
+
 import com.jfinal.i18n.I18N;
 import com.jfinal.kit.StrKit;
 import com.jfinal.render.ContentType;
@@ -44,29 +48,29 @@ import com.jfinal.upload.UploadFile;
  * 衣带渐宽终不悔，为伊消得人憔悴。<br>
  * 众里寻她千百度，蓦然回首，那人却在灯火阑珊处。
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public abstract class Controller {
-	
+
 	private HttpServletRequest request;
 	private HttpServletResponse response;
-	
+
 	private String urlPara;
 	private String[] urlParaArray;
-	
+
 	private static final String[] NULL_URL_PARA_ARRAY = new String[0];
 	private static final String URL_PARA_SEPARATOR = Config.getConstants().getUrlParaSeparator();
-	
+
 	void init(HttpServletRequest request, HttpServletResponse response, String urlPara) {
 		this.request = request;
 		this.response = response;
 		this.urlPara = urlPara;
 	}
-	
+
 	public void setUrlPara(String urlPara) {
 		this.urlPara = urlPara;
 		this.urlParaArray = null;
 	}
-	
+
 	/**
 	 * Stores an attribute in this request
 	 * @param name a String specifying the name of the attribute
@@ -76,7 +80,7 @@ public abstract class Controller {
 		request.setAttribute(name, value);
 		return this;
 	}
-	
+
 	/**
 	 * Removes an attribute from this request
 	 * @param name a String specifying the name of the attribute to remove
@@ -85,7 +89,7 @@ public abstract class Controller {
 		request.removeAttribute(name);
 		return this;
 	}
-	
+
 	/**
 	 * Stores attributes in this request, key of the map as attribute name and value of the map as attribute value
 	 * @param attrMap key and value as attribute of the map to be stored
@@ -95,7 +99,7 @@ public abstract class Controller {
 			request.setAttribute(entry.getKey(), entry.getValue());
 		return this;
 	}
-	
+
 	/**
 	 * Returns the value of a request parameter as a String, or null if the parameter does not exist.
 	 * <p>
@@ -110,7 +114,7 @@ public abstract class Controller {
 	public String getPara(String name) {
 		return request.getParameter(name);
 	}
-	
+
 	/**
 	 * Returns the value of a request parameter as a String, or default value if the parameter does not exist.
 	 * @param name a String specifying the name of the parameter
@@ -121,7 +125,7 @@ public abstract class Controller {
 		String result = request.getParameter(name);
 		return result != null && !"".equals(result) ? result : defaultValue;
 	}
-	
+
 	/**
 	 * Returns the values of the request parameters as a Map.
 	 * @return a Map contains all the parameters name and value
@@ -129,7 +133,7 @@ public abstract class Controller {
 	public Map<String, String[]> getParaMap() {
 		return request.getParameterMap();
 	}
-	
+
 	/**
 	 * Returns an Enumeration of String objects containing the names of the parameters
 	 * contained in this request. If the request has no parameters, the method returns
@@ -140,7 +144,7 @@ public abstract class Controller {
 	public Enumeration<String> getParaNames() {
 		return request.getParameterNames();
 	}
-	
+
 	/**
 	 * Returns an array of String objects containing all of the values the given request 
 	 * parameter has, or null if the parameter does not exist. If the parameter has a 
@@ -151,7 +155,7 @@ public abstract class Controller {
 	public String[] getParaValues(String name) {
 		return request.getParameterValues(name);
 	}
-	
+
 	/**
 	 * Returns an array of Integer objects containing all of the values the given request 
 	 * parameter has, or null if the parameter does not exist. If the parameter has a 
@@ -164,11 +168,11 @@ public abstract class Controller {
 		if (values == null)
 			return null;
 		Integer[] result = new Integer[values.length];
-		for (int i=0; i<result.length; i++)
+		for (int i = 0; i < result.length; i++)
 			result[i] = Integer.parseInt(values[i]);
 		return result;
 	}
-	
+
 	/**
 	 * Returns an Enumeration containing the names of the attributes available to this request.
 	 * This method returns an empty Enumeration if the request has no attributes available to it. 
@@ -177,34 +181,34 @@ public abstract class Controller {
 	public Enumeration<String> getAttrNames() {
 		return request.getAttributeNames();
 	}
-	
+
 	/**
 	 * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
 	 * @param name a String specifying the name of the attribute
 	 * @return an Object containing the value of the attribute, or null if the attribute does not exist
 	 */
 	public <T> T getAttr(String name) {
-		return (T)request.getAttribute(name);
+		return (T) request.getAttribute(name);
 	}
-	
+
 	/**
 	 * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
 	 * @param name a String specifying the name of the attribute
 	 * @return an String Object containing the value of the attribute, or null if the attribute does not exist
 	 */
 	public String getAttrForStr(String name) {
-		return (String)request.getAttribute(name);
+		return (String) request.getAttribute(name);
 	}
-	
+
 	/**
 	 * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
 	 * @param name a String specifying the name of the attribute
 	 * @return an Integer Object containing the value of the attribute, or null if the attribute does not exist
 	 */
 	public Integer getAttrForInt(String name) {
-		return (Integer)request.getAttribute(name);
+		return (Integer) request.getAttribute(name);
 	}
-	
+
 	private Integer toInt(String value, Integer defaultValue) {
 		if (value == null || "".equals(value.trim()))
 			return defaultValue;
@@ -212,7 +216,7 @@ public abstract class Controller {
 			return -Integer.parseInt(value.substring(1));
 		return Integer.parseInt(value);
 	}
-	
+
 	/**
 	 * Returns the value of a request parameter and convert to Integer.
 	 * @param name a String specifying the name of the parameter
@@ -221,7 +225,7 @@ public abstract class Controller {
 	public Integer getParaToInt(String name) {
 		return toInt(request.getParameter(name), null);
 	}
-	
+
 	/**
 	 * Returns the value of a request parameter and convert to Integer with a default value if it is null.
 	 * @param name a String specifying the name of the parameter
@@ -230,7 +234,7 @@ public abstract class Controller {
 	public Integer getParaToInt(String name, Integer defaultValue) {
 		return toInt(request.getParameter(name), defaultValue);
 	}
-	
+
 	private Long toLong(String value, Long defaultValue) {
 		if (value == null || "".equals(value.trim()))
 			return defaultValue;
@@ -238,7 +242,7 @@ public abstract class Controller {
 			return -Long.parseLong(value.substring(1));
 		return Long.parseLong(value);
 	}
-	
+
 	/**
 	 * Returns the value of a request parameter and convert to Long.
 	 * @param name a String specifying the name of the parameter
@@ -247,7 +251,7 @@ public abstract class Controller {
 	public Long getParaToLong(String name) {
 		return toLong(request.getParameter(name), null);
 	}
-	
+
 	/**
 	 * Returns the value of a request parameter and convert to Long with a default value if it is null.
 	 * @param name a String specifying the name of the parameter
@@ -256,7 +260,7 @@ public abstract class Controller {
 	public Long getParaToLong(String name, Long defaultValue) {
 		return toLong(request.getParameter(name), defaultValue);
 	}
-	
+
 	private Boolean toBoolean(String value, Boolean defaultValue) {
 		if (value == null || "".equals(value.trim()))
 			return defaultValue;
@@ -267,7 +271,7 @@ public abstract class Controller {
 			return Boolean.FALSE;
 		throw new RuntimeException("Can not parse the parameter \"" + value + "\" to boolean value.");
 	}
-	
+
 	/**
 	 * Returns the value of a request parameter and convert to Boolean.
 	 * @param name a String specifying the name of the parameter
@@ -276,7 +280,7 @@ public abstract class Controller {
 	public Boolean getParaToBoolean(String name) {
 		return toBoolean(request.getParameter(name), null);
 	}
-	
+
 	/**
 	 * Returns the value of a request parameter and convert to Boolean with a default value if it is null.
 	 * @param name a String specifying the name of the parameter
@@ -285,38 +289,42 @@ public abstract class Controller {
 	public Boolean getParaToBoolean(String name, Boolean defaultValue) {
 		return toBoolean(request.getParameter(name), defaultValue);
 	}
-	
+
 	/**
 	 * Get all para from url and convert to Boolean
 	 */
 	public Boolean getParaToBoolean() {
 		return toBoolean(getPara(), null);
 	}
-	
+
 	/**
 	 * Get para from url and conver to Boolean. The first index is 0
 	 */
 	public Boolean getParaToBoolean(int index) {
 		return toBoolean(getPara(index), null);
 	}
-	
+
 	/**
 	 * Get para from url and conver to Boolean with default value if it is null.
 	 */
 	public Boolean getParaToBoolean(int index, Boolean defaultValue) {
 		return toBoolean(getPara(index), defaultValue);
 	}
-	
+
 	private Date toDate(String value, Date defaultValue) {
+		return toDate(value, defaultValue, new java.text.SimpleDateFormat("yyyy-MM-dd"));
+	}
+
+	private Date toDate(String value, Date defaultValue, SimpleDateFormat sf) {
 		if (value == null || "".equals(value.trim()))
 			return defaultValue;
 		try {
-			return new java.text.SimpleDateFormat("yyyy-MM-dd").parse(value);
+			return sf.parse(value);
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Returns the value of a request parameter and convert to Date.
 	 * @param name a String specifying the name of the parameter
@@ -325,7 +333,17 @@ public abstract class Controller {
 	public Date getParaToDate(String name) {
 		return toDate(request.getParameter(name), null);
 	}
-	
+
+	/**
+	 * Returns the value of a request parameter and convert to Date.
+	 * @param name a String specifying the name of the parameter
+	 * @param sf
+	 * @return a Date representing the single value of the parameter
+	 */
+	public Date getParaToDate(String name, SimpleDateFormat sf) {
+		return toDate(request.getParameter(name), null, sf);
+	}
+
 	/**
 	 * Returns the value of a request parameter and convert to Date with a default value if it is null.
 	 * @param name a String specifying the name of the parameter
@@ -334,35 +352,45 @@ public abstract class Controller {
 	public Date getParaToDate(String name, Date defaultValue) {
 		return toDate(request.getParameter(name), defaultValue);
 	}
-	
+
+	/**
+	 * Returns the value of a request parameter and convert to Date with a default value if it is null.
+	 * @param name a String specifying the name of the parameter
+	 * @param sf
+	 * @return a Date representing the single value of the parameter
+	 */
+	public Date getParaToDate(String name, Date defaultValue, SimpleDateFormat sf) {
+		return toDate(request.getParameter(name), defaultValue, sf);
+	}
+
 	/**
 	 * Get all para from url and convert to Date
 	 */
 	public Date getParaToDate() {
 		return toDate(getPara(), null);
 	}
-	
+
 	/**
 	 * Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller
 	 */
 	public HttpServletRequest getRequest() {
 		return request;
 	}
-	
+
 	/**
 	 * Return HttpServletResponse. Do not use HttpServletResponse Object in constructor of Controller
 	 */
 	public HttpServletResponse getResponse() {
 		return response;
 	}
-	
+
 	/**
 	 * Return HttpSession.
 	 */
 	public HttpSession getSession() {
 		return request.getSession();
 	}
-	
+
 	/**
 	 * Return HttpSession.
 	 * @param create a boolean specifying create HttpSession if it not exists
@@ -370,16 +398,16 @@ public abstract class Controller {
 	public HttpSession getSession(boolean create) {
 		return request.getSession(create);
 	}
-	
+
 	/**
 	 * Return a Object from session.
 	 * @param key a String specifying the key of the Object stored in session
 	 */
 	public <T> T getSessionAttr(String key) {
 		HttpSession session = request.getSession(false);
-		return session != null ? (T)session.getAttribute(key) : null;
+		return session != null ? (T) session.getAttribute(key) : null;
 	}
-	
+
 	/**
 	 * Store Object to session.
 	 * @param key a String specifying the key of the Object stored in session
@@ -389,7 +417,7 @@ public abstract class Controller {
 		request.getSession().setAttribute(key, value);
 		return this;
 	}
-	
+
 	/**
 	 * Remove Object in session.
 	 * @param key a String specifying the key of the Object stored in session
@@ -400,7 +428,7 @@ public abstract class Controller {
 			session.removeAttribute(key);
 		return this;
 	}
-	
+
 	/**
 	 * Get cookie value by cookie name.
 	 */
@@ -408,14 +436,14 @@ public abstract class Controller {
 		Cookie cookie = getCookieObject(name);
 		return cookie != null ? cookie.getValue() : defaultValue;
 	}
-	
+
 	/**
 	 * Get cookie value by cookie name.
 	 */
 	public String getCookie(String name) {
 		return getCookie(name, null);
 	}
-	
+
 	/**
 	 * Get cookie value by cookie name and convert to Integer.
 	 */
@@ -423,7 +451,7 @@ public abstract class Controller {
 		String result = getCookie(name);
 		return result != null ? Integer.parseInt(result) : null;
 	}
-	
+
 	/**
 	 * Get cookie value by cookie name and convert to Integer.
 	 */
@@ -431,7 +459,7 @@ public abstract class Controller {
 		String result = getCookie(name);
 		return result != null ? Integer.parseInt(result) : defaultValue;
 	}
-	
+
 	/**
 	 * Get cookie value by cookie name and convert to Long.
 	 */
@@ -439,7 +467,7 @@ public abstract class Controller {
 		String result = getCookie(name);
 		return result != null ? Long.parseLong(result) : null;
 	}
-	
+
 	/**
 	 * Get cookie value by cookie name and convert to Long.
 	 */
@@ -447,7 +475,7 @@ public abstract class Controller {
 		String result = getCookie(name);
 		return result != null ? Long.parseLong(result) : defaultValue;
 	}
-	
+
 	/**
 	 * Get cookie object by cookie name.
 	 */
@@ -459,7 +487,7 @@ public abstract class Controller {
 					return cookie;
 		return null;
 	}
-	
+
 	/**
 	 * Get all cookie objects.
 	 */
@@ -467,7 +495,7 @@ public abstract class Controller {
 		Cookie[] result = request.getCookies();
 		return result != null ? result : new Cookie[0];
 	}
-	
+
 	/**
 	 * Set Cookie to response.
 	 */
@@ -475,7 +503,7 @@ public abstract class Controller {
 		response.addCookie(cookie);
 		return this;
 	}
-	
+
 	/**
 	 * Set Cookie to response.
 	 * @param name cookie name
@@ -487,7 +515,7 @@ public abstract class Controller {
 		setCookie(name, value, maxAgeInSeconds, path, null);
 		return this;
 	}
-	
+
 	/**
 	 * Set Cookie to response.
 	 * @param name cookie name
@@ -505,7 +533,7 @@ public abstract class Controller {
 		response.addCookie(cookie);
 		return this;
 	}
-	
+
 	/**
 	 * Set Cookie with path = "/".
 	 */
@@ -513,7 +541,7 @@ public abstract class Controller {
 		setCookie(name, value, maxAgeInSeconds, "/", null);
 		return this;
 	}
-	
+
 	/**
 	 * Remove Cookie with path = "/".
 	 */
@@ -521,7 +549,7 @@ public abstract class Controller {
 		setCookie(name, null, 0, "/", null);
 		return this;
 	}
-	
+
 	/**
 	 * Remove Cookie.
 	 */
@@ -529,7 +557,7 @@ public abstract class Controller {
 		setCookie(name, null, 0, path, null);
 		return this;
 	}
-	
+
 	/**
 	 * Remove Cookie.
 	 */
@@ -537,38 +565,38 @@ public abstract class Controller {
 		setCookie(name, null, 0, path, domain);
 		return this;
 	}
-	
+
 	// --------
-	
+
 	/**
 	 * Get all para with separator char from url
 	 */
 	public String getPara() {
-		if ("".equals(urlPara))	// urlPara maybe is "" see ActionMapping.getAction(String)
+		if ("".equals(urlPara)) // urlPara maybe is "" see ActionMapping.getAction(String)
 			urlPara = null;
 		return urlPara;
 	}
-	
+
 	/**
 	 * Get para from url. The index of first url para is 0.
 	 */
 	public String getPara(int index) {
 		if (index < 0)
 			return getPara();
-		
+
 		if (urlParaArray == null) {
-			if (urlPara == null || "".equals(urlPara))	// urlPara maybe is "" see ActionMapping.getAction(String)
+			if (urlPara == null || "".equals(urlPara)) // urlPara maybe is "" see ActionMapping.getAction(String)
 				urlParaArray = NULL_URL_PARA_ARRAY;
 			else
 				urlParaArray = urlPara.split(URL_PARA_SEPARATOR);
-			
-			for (int i=0; i<urlParaArray.length; i++)
+
+			for (int i = 0; i < urlParaArray.length; i++)
 				if ("".equals(urlParaArray[i]))
 					urlParaArray[i] = null;
 		}
 		return urlParaArray.length > index ? urlParaArray[index] : null;
 	}
-	
+
 	/**
 	 * Get para from url with default value if it is null or "".
 	 */
@@ -576,114 +604,114 @@ public abstract class Controller {
 		String result = getPara(index);
 		return result != null && !"".equals(result) ? result : defaultValue;
 	}
-	
+
 	/**
 	 * Get para from url and conver to Integer. The first index is 0
 	 */
 	public Integer getParaToInt(int index) {
 		return toInt(getPara(index), null);
 	}
-	
+
 	/**
 	 * Get para from url and conver to Integer with default value if it is null.
 	 */
 	public Integer getParaToInt(int index, Integer defaultValue) {
 		return toInt(getPara(index), defaultValue);
 	}
-	
+
 	/**
 	 * Get para from url and conver to Long.
 	 */
 	public Long getParaToLong(int index) {
 		return toLong(getPara(index), null);
 	}
-	
+
 	/**
 	 * Get para from url and conver to Long with default value if it is null.
 	 */
 	public Long getParaToLong(int index, Long defaultValue) {
 		return toLong(getPara(index), defaultValue);
 	}
-	
+
 	/**
 	 * Get all para from url and convert to Integer
 	 */
 	public Integer getParaToInt() {
 		return toInt(getPara(), null);
 	}
-	
+
 	/**
 	 * Get all para from url and convert to Long
 	 */
 	public Long getParaToLong() {
 		return toLong(getPara(), null);
 	}
-	
+
 	/**
 	 * Get model from http request.
 	 */
 	public <T> T getModel(Class<T> modelClass) {
-		return (T)ModelInjector.inject(modelClass, request, false);
+		return (T) ModelInjector.inject(modelClass, request, false);
 	}
-	
+
 	/**
 	 * Get model from http request.
 	 */
 	public <T> T getModel(Class<T> modelClass, String modelName) {
-		return (T)ModelInjector.inject(modelClass, modelName, request, false);
+		return (T) ModelInjector.inject(modelClass, modelName, request, false);
 	}
-	
+
 	// TODO public <T> List<T> getModels(Class<T> modelClass, String modelName) {}
-	
+
 	// --------
-	
+
 	/**
 	 * Get upload file from multipart request.
 	 */
 	public List<UploadFile> getFiles(String saveDirectory, Integer maxPostSize, String encoding) {
 		if (request instanceof MultipartRequest == false)
 			request = new MultipartRequest(request, saveDirectory, maxPostSize, encoding);
-		return ((MultipartRequest)request).getFiles();
+		return ((MultipartRequest) request).getFiles();
 	}
-	
+
 	public UploadFile getFile(String parameterName, String saveDirectory, Integer maxPostSize, String encoding) {
 		getFiles(saveDirectory, maxPostSize, encoding);
 		return getFile(parameterName);
 	}
-	
+
 	public List<UploadFile> getFiles(String saveDirectory, int maxPostSize) {
 		if (request instanceof MultipartRequest == false)
 			request = new MultipartRequest(request, saveDirectory, maxPostSize);
-		return ((MultipartRequest)request).getFiles();
+		return ((MultipartRequest) request).getFiles();
 	}
-	
+
 	public UploadFile getFile(String parameterName, String saveDirectory, int maxPostSize) {
 		getFiles(saveDirectory, maxPostSize);
 		return getFile(parameterName);
 	}
-	
+
 	public List<UploadFile> getFiles(String saveDirectory) {
 		if (request instanceof MultipartRequest == false)
 			request = new MultipartRequest(request, saveDirectory);
-		return ((MultipartRequest)request).getFiles();
+		return ((MultipartRequest) request).getFiles();
 	}
-	
+
 	public UploadFile getFile(String parameterName, String saveDirectory) {
 		getFiles(saveDirectory);
 		return getFile(parameterName);
 	}
-	
+
 	public List<UploadFile> getFiles() {
 		if (request instanceof MultipartRequest == false)
 			request = new MultipartRequest(request);
-		return ((MultipartRequest)request).getFiles();
+		return ((MultipartRequest) request).getFiles();
 	}
-	
+
 	public UploadFile getFile() {
 		List<UploadFile> uploadFiles = getFiles();
 		return uploadFiles.size() > 0 ? uploadFiles.get(0) : null;
 	}
-	
+
 	public UploadFile getFile(String parameterName) {
 		List<UploadFile> uploadFiles = getFiles();
 		for (UploadFile uploadFile : uploadFiles) {
@@ -693,7 +721,7 @@ public abstract class Controller {
 		}
 		return null;
 	}
-	
+
 	// i18n features --------
 	/**
 	 * Write Local to cookie
@@ -702,38 +730,37 @@ public abstract class Controller {
 		setCookie(I18N_LOCALE, locale.toString(), I18N.getI18nMaxAgeOfCookie());
 		return this;
 	}
-	
+
 	public Controller setLocaleToCookie(Locale locale, int maxAge) {
 		setCookie(I18N_LOCALE, locale.toString(), maxAge);
 		return this;
 	}
-	
+
 	public String getText(String key) {
 		return I18N.getText(key, getLocaleFromCookie());
 	}
-	
+
 	public String getText(String key, String defaultValue) {
 		return I18N.getText(key, defaultValue, getLocaleFromCookie());
 	}
-	
+
 	private Locale getLocaleFromCookie() {
 		Cookie cookie = getCookieObject(I18N_LOCALE);
 		if (cookie != null) {
 			return I18N.localeFromString(cookie.getValue());
-		}
-		else {
+		} else {
 			Locale defaultLocale = I18N.getDefaultLocale();
 			setLocaleToCookie(defaultLocale);
 			return I18N.localeFromString(defaultLocale.toString());
 		}
 	}
-	
+
 	/**
 	 * Keep all parameter's value except model value
 	 */
 	public Controller keepPara() {
 		Map<String, String[]> map = request.getParameterMap();
-		for (Entry<String, String[]> e: map.entrySet()) {
+		for (Entry<String, String[]> e : map.entrySet()) {
 			String[] values = e.getValue();
 			if (values.length == 1)
 				request.setAttribute(e.getKey(), values[0]);
@@ -742,7 +769,7 @@ public abstract class Controller {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Keep parameter's value names pointed, model value can not be kept
 	 */
@@ -758,7 +785,7 @@ public abstract class Controller {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Convert para to special type and keep it
 	 */
@@ -766,35 +793,38 @@ public abstract class Controller {
 		String[] values = request.getParameterValues(name);
 		if (values != null) {
 			if (values.length == 1)
-				try {request.setAttribute(name, TypeConverter.convert(type, values[0]));} catch (ParseException e) {}
+				try {
+					request.setAttribute(name, TypeConverter.convert(type, values[0]));
+				} catch (ParseException e) {
+				}
 			else
 				request.setAttribute(name, values);
 		}
 		return this;
 	}
-	
+
 	public Controller keepPara(Class type, String... names) {
 		if (type == String.class)
 			return keepPara(names);
-		
+
 		if (names != null)
 			for (String name : names)
 				keepPara(type, name);
 		return this;
 	}
-	
+
 	public Controller keepModel(Class modelClass, String modelName) {
 		Object model = ModelInjector.inject(modelClass, modelName, request, true);
 		request.setAttribute(modelName, model);
 		return this;
 	}
-	
+
 	public Controller keepModel(Class modelClass) {
 		String modelName = StrKit.firstCharToLowerCase(modelClass.getSimpleName());
 		keepModel(modelClass, modelName);
 		return this;
 	}
-	
+
 	/**
 	 * Create a token.
 	 * @param tokenName the token name used in view
@@ -803,14 +833,14 @@ public abstract class Controller {
 	public void createToken(String tokenName, int secondsOfTimeOut) {
 		com.jfinal.token.TokenManager.createToken(this, tokenName, secondsOfTimeOut);
 	}
-	
+
 	/**
 	 * Create a token with default token name and with default seconds of time out.
 	 */
 	public void createToken() {
 		createToken(Const.DEFAULT_TOKEN_NAME, Const.DEFAULT_SECONDS_OF_TOKEN_TIME_OUT);
 	}
-	
+
 	/**
 	 * Create a token with default seconds of time out.
 	 * @param tokenName the token name used in view
@@ -818,7 +848,7 @@ public abstract class Controller {
 	public void createToken(String tokenName) {
 		createToken(tokenName, Const.DEFAULT_SECONDS_OF_TOKEN_TIME_OUT);
 	}
-	
+
 	/**
 	 * Check token to prevent resubmit.
 	 * @param tokenName the token name used in view's form
@@ -827,7 +857,7 @@ public abstract class Controller {
 	public boolean validateToken(String tokenName) {
 		return com.jfinal.token.TokenManager.validateToken(this, tokenName);
 	}
-	
+
 	/**
 	 * Check token to prevent resubmit  with default token key ---> "JFINAL_TOKEN_KEY"
 	 * @return true if token is correct
@@ -835,7 +865,7 @@ public abstract class Controller {
 	public boolean validateToken() {
 		return validateToken(Const.DEFAULT_TOKEN_NAME);
 	}
-	
+
 	/**
 	 * Return true if the para value is blank otherwise return false
 	 */
@@ -843,7 +873,7 @@ public abstract class Controller {
 		String value = request.getParameter(paraName);
 		return value == null || value.trim().length() == 0;
 	}
-	
+
 	/**
 	 * Return true if the urlPara value is blank otherwise return false
 	 */
@@ -851,69 +881,69 @@ public abstract class Controller {
 		String value = getPara(index);
 		return value == null || value.trim().length() == 0;
 	}
-	
+
 	/**
 	 * Return true if the para exists otherwise return false
 	 */
 	public boolean isParaExists(String paraName) {
 		return request.getParameterMap().containsKey(paraName);
 	}
-	
+
 	/**
 	 * Return true if the urlPara exists otherwise return false
 	 */
 	public boolean isParaExists(int index) {
 		return getPara(index) != null;
 	}
-	
+
 	// ----------------
 	// render below ---
 	private static final RenderFactory renderFactory = RenderFactory.me();
-	
+
 	/**
 	 * Hold Render object when invoke renderXxx(...)
 	 */
 	private Render render;
-	
+
 	public Render getRender() {
 		return render;
 	}
-	
+
 	/**
 	 * Render with any Render which extends Render
 	 */
 	public void render(Render render) {
 		this.render = render;
 	}
-	
+
 	/**
 	 * Render with view use default type Render configured in JFinalConfig
 	 */
 	public void render(String view) {
 		render = renderFactory.getRender(view);
 	}
-	
+
 	/**
 	 * Render with jsp view
 	 */
 	public void renderJsp(String view) {
 		render = renderFactory.getJspRender(view);
 	}
-	
+
 	/**
 	 * Render with freemarker view
 	 */
 	public void renderFreeMarker(String view) {
 		render = renderFactory.getFreeMarkerRender(view);
 	}
-	
+
 	/**
 	 * Render with velocity view
 	 */
 	public void renderVelocity(String view) {
 		render = renderFactory.getVelocityRender(view);
 	}
-	
+
 	/**
 	 * Render with json
 	 * <p>
@@ -924,14 +954,14 @@ public abstract class Controller {
 	public void renderJson(String key, Object value) {
 		render = renderFactory.getJsonRender(key, value);
 	}
-	
+
 	/**
 	 * Render with json
 	 */
 	public void renderJson() {
 		render = renderFactory.getJsonRender();
 	}
-	
+
 	/**
 	 * Render with attributes set by setAttr(...) before.
 	 * <p>
@@ -940,7 +970,7 @@ public abstract class Controller {
 	public void renderJson(String[] attrs) {
 		render = renderFactory.getJsonRender(attrs);
 	}
-	
+
 	/**
 	 * Render with json text.
 	 * <p>
@@ -949,7 +979,7 @@ public abstract class Controller {
 	public void renderJson(String jsonText) {
 		render = renderFactory.getJsonRender(jsonText);
 	}
-	
+
 	/**
 	 * Render json with object.
 	 * <p>
@@ -958,14 +988,14 @@ public abstract class Controller {
 	public void renderJson(Object object) {
 		render = renderFactory.getJsonRender(object);
 	}
-	
+
 	/**
 	 * Render with text. The contentType is: "text/plain".
 	 */
 	public void renderText(String text) {
 		render = renderFactory.getTextRender(text);
 	}
-	
+
 	/**
 	 * Render with text and content type.
 	 * <p>
@@ -974,7 +1004,7 @@ public abstract class Controller {
 	public void renderText(String text, String contentType) {
 		render = renderFactory.getTextRender(text, contentType);
 	}
-	
+
 	/**
 	 * Render with text and ContentType.
 	 * <p>
@@ -983,42 +1013,42 @@ public abstract class Controller {
 	public void renderText(String text, ContentType contentType) {
 		render = renderFactory.getTextRender(text, contentType);
 	}
-	
+
 	/**
 	 * Forward to an action
 	 */
 	public void forwardAction(String actionUrl) {
 		render = new ActionRender(actionUrl);
 	}
-	
+
 	/**
 	 * Render with file
 	 */
 	public void renderFile(String fileName) {
 		render = renderFactory.getFileRender(fileName);
 	}
-	
+
 	/**
 	 * Render with file
 	 */
 	public void renderFile(File file) {
 		render = renderFactory.getFileRender(file);
 	}
-	
+
 	/**
 	 * Redirect to url
 	 */
 	public void redirect(String url) {
 		render = renderFactory.getRedirectRender(url);
 	}
-	
+
 	/**
 	 * Redirect to url
 	 */
 	public void redirect(String url, boolean withQueryString) {
 		render = renderFactory.getRedirectRender(url, withQueryString);
 	}
-	
+
 	/**
 	 * Render with view and status use default type Render configured in JFinalConfig
 	 */
@@ -1026,63 +1056,63 @@ public abstract class Controller {
 		render = renderFactory.getRender(view);
 		response.setStatus(status);
 	}
-	
+
 	/**
 	 * Render with url and 301 status
 	 */
 	public void redirect301(String url) {
 		render = renderFactory.getRedirect301Render(url);
 	}
-	
+
 	/**
 	 * Render with url and 301 status
 	 */
 	public void redirect301(String url, boolean withQueryString) {
 		render = renderFactory.getRedirect301Render(url, withQueryString);
 	}
-	
+
 	/**
 	 * Render with view and errorCode status
 	 */
 	public void renderError(int errorCode, String view) {
 		throw new ActionException(errorCode, renderFactory.getErrorRender(errorCode, view));
 	}
-	
+
 	/**
 	 * Render with render and errorCode status
 	 */
 	public void renderError(int errorCode, Render render) {
 		throw new ActionException(errorCode, render);
 	}
-	
+
 	/**
 	 * Render with view and errorCode status configured in JFinalConfig
 	 */
 	public void renderError(int errorCode) {
 		throw new ActionException(errorCode, renderFactory.getErrorRender(errorCode));
 	}
-	
+
 	/**
 	 * Render nothing, no response to browser
 	 */
 	public void renderNull() {
 		render = renderFactory.getNullRender();
 	}
-	
+
 	/**
 	 * Render with javascript text. The contentType is: "text/javascript".
 	 */
 	public void renderJavascript(String javascriptText) {
 		render = renderFactory.getJavascriptRender(javascriptText);
 	}
-	
+
 	/**
 	 * Render with html text. The contentType is: "text/html".
 	 */
 	public void renderHtml(String htmlText) {
 		render = renderFactory.getHtmlRender(htmlText);
 	}
-	
+
 	/**
 	 * Render with xml view using freemarker.
 	 */
@@ -1090,5 +1120,3 @@ public abstract class Controller {
 		render = renderFactory.getXmlRender(view);
 	}
 }
-
-
