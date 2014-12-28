@@ -335,6 +335,7 @@ public abstract class Controller {
 	}
 
 	/**
+	 * 自定义日期格式化
 	 * Returns the value of a request parameter and convert to Date.
 	 * @param name a String specifying the name of the parameter
 	 * @param sf
