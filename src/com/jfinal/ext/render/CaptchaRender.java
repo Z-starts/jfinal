@@ -57,12 +57,12 @@ public class CaptchaRender extends Render {
 		vCode = HashKit.md5(vCode);
 		Cookie cookie = new Cookie(captchaName, vCode);
 		cookie.setMaxAge(-1);
-		// cookie.setPath("/");
+		cookie.setPath("/");
 		try {
 			// try catch 用来兼容不支持 httpOnly 的 tomcat、jetty
 			cookie.setHttpOnly(true);
-		} catch (Throwable t) {
-			LogKit.logNothing(t);
+		} catch (Exception e) {
+			LogKit.logNothing(e);
 		}
 		response.addCookie(cookie);
 		response.setHeader("Pragma","no-cache");
